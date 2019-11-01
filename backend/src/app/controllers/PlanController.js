@@ -55,7 +55,7 @@ class PlanController {
     let plan = await Plan.findByPk(req.params.id);
 
     if (!plan) {
-      return res.status(400).json({ error: 'Plan does not exists' });
+      return res.status(400).json({ error: 'Plan does not found' });
     }
 
     if (plan.title !== req.body.title) {
@@ -79,7 +79,7 @@ class PlanController {
     const plan = await Plan.findByPk(req.params.id);
 
     if (!plan) {
-      return res.status(400).json({ error: 'Plan does not exists' });
+      return res.status(400).json({ error: 'Plan does not found' });
     }
 
     plan.destroy();
