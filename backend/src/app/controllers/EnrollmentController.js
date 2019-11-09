@@ -1,8 +1,10 @@
 import * as Yup from 'yup';
-import { parseISO, addMonths } from 'date-fns';
+import { format, parseISO, addMonths } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Enrollment from '../models/Enrollments';
 import Student from '../models/Student';
 import Plan from '../models/Plan';
+import Mail from '../../lib/Mail';
 
 class EnrollmentController {
   async index(req, res) {
@@ -82,7 +84,23 @@ class EnrollmentController {
       price,
     });
 
-    // TODO send email
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Matrícula GymPoint',
+      template: 'enrollment',
+      context: {
+        student: student.name,
+        plan: plan.title,
+        price_month: plan.price,
+        price_total: enrollment.price,
+        start_date: format(enrollment.start_date, "dd'/'MM'/'yyyy", {
+          locale: pt,
+        }),
+        end_date: format(enrollment.end_date, "dd'/'MM'/'yyyy", {
+          locale: pt,
+        }),
+      },
+    });
 
     return res.json(enrollment);
   }
